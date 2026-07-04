@@ -58,7 +58,7 @@ export async function setShipmentTelex(id: string, value: string): Promise<Res> 
 }
 
 export async function setShipmentCommission(id: string, value: string): Promise<Res> {
-  return run((a) => updateShipment(a, id, { commissioned: value === "Yes" }).then(() => undefined));
+  return run((a) => updateShipment(a, id, { commissioned: value === "Received" }).then(() => undefined));
 }
 
 export async function setShipmentContainer(id: string, value: string): Promise<Res> {

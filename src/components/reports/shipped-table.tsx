@@ -28,7 +28,7 @@ const PAY_CLS: Record<string, string> = {
   PARTIALLY_PAID: "bg-warn-soft text-warn",
   PAID: "bg-ok-soft text-ok",
 };
-const COMMISSION_OPTIONS = [{ value: "Yes", label: "Yes" }, { value: "No", label: "No" }];
+const COMMISSION_OPTIONS = [{ value: "Received", label: "Received" }, { value: "Pending", label: "Pending" }];
 
 export function ShippedTable({ rows, canEditShipment, canEditFinance, canDeleteShipment }: { rows: ShippedRow[]; canEditShipment: boolean; canEditFinance: boolean; canDeleteShipment: boolean }) {
   const [q, setQ] = useState("");
@@ -49,7 +49,7 @@ export function ShippedTable({ rows, canEditShipment, canEditFinance, canDeleteS
       (buyerSel.length === 0 || buyerSel.includes(r.buyer)) &&
       (brandSel.length === 0 || brandSel.includes(r.brand)) &&
       (!pay || (pay === "PAID" ? r.paymentStatus === "PAID" : r.paymentStatus && r.paymentStatus !== "PAID")) &&
-      (!comm || (comm === "Yes" ? r.commissioned : !r.commissioned)) &&
+      (!comm || (comm === "Received" ? r.commissioned : !r.commissioned)) &&
       (!needle || `${r.poNumber} ${r.reference} ${r.invoiceNumber ?? ""} ${r.factory} ${r.buyer} ${r.brand} ${r.containerNo ?? ""}`.toLowerCase().includes(needle)),
     );
   }, [rows, q, factorySel, buyerSel, brandSel, pay, comm]);
@@ -73,8 +73,8 @@ export function ShippedTable({ rows, canEditShipment, canEditFinance, canDeleteS
         </select>
         <select value={comm} onChange={(e) => setComm(e.target.value)} className="select" aria-label="Filter commission">
           <option value="">Any commission</option>
-          <option value="Yes">Commission: Yes</option>
-          <option value="No">Commission: No</option>
+          <option value="Received">Commission: Received</option>
+          <option value="Pending">Commission: Pending</option>
         </select>
         {(q || factorySel.length || buyerSel.length || brandSel.length || pay || comm) && (
           <button type="button" onClick={() => { setQ(""); setFactorySel([]); setBuyerSel([]); setBrandSel([]); setPay(""); setComm(""); }} className="rounded-sm border border-line px-2.5 py-1.5 text-xs text-ink-soft hover:border-accent hover:text-accent">Clear</button>
@@ -83,7 +83,7 @@ export function ShippedTable({ rows, canEditShipment, canEditFinance, canDeleteS
           <ExportButton
             filename="shipped-goods.csv"
             headers={EXPORT_HEADERS}
-            rows={filtered.map((r) => [r.poNumber, r.reference, r.factory, r.buyer, r.brand, r.styles, r.sizes, r.colours, r.qty, r.value || 0, r.shortShip ?? "", formatDate(r.shipDate), formatDate(r.etaDestination), r.invoiceNumber ?? "", r.invoiceValue ?? 0, formatDate(r.invoiceDueDate), r.paymentStatus ?? "", r.containerNo ?? "", r.telexStatus, r.commissioned ? "Yes" : "No", r.tcStatus ?? "", r.remarks])}
+            rows={filtered.map((r) => [r.poNumber, r.reference, r.factory, r.buyer, r.brand, r.styles, r.sizes, r.colours, r.qty, r.value || 0, r.shortShip ?? "", formatDate(r.shipDate), formatDate(r.etaDestination), r.invoiceNumber ?? "", r.invoiceValue ?? 0, formatDate(r.invoiceDueDate), r.paymentStatus ?? "", r.containerNo ?? "", r.telexStatus, r.commissioned ? "Received" : "Pending", r.tcStatus ?? "", r.remarks])}
           />
           <span className="text-xs text-ink-soft">{filtered.length} of {rows.length}</span>
         </div>
@@ -173,8 +173,8 @@ export function ShippedTable({ rows, canEditShipment, canEditFinance, canDeleteS
                 </td>
                 <td className="px-3 py-2">
                   {(() => {
-                    const v = r.commissioned ? "Yes" : "No";
-                    const badge = <span className={`inline-flex rounded-sm px-2 py-0.5 text-[0.625rem] font-semibold uppercase ${r.commissioned ? "bg-ok-soft text-ok" : "bg-paper text-ink-soft"}`}>{v}</span>;
+                    const v = r.commissioned ? "Received" : "Pending";
+                    const badge = <span className={`inline-flex rounded-sm px-2 py-0.5 text-[0.625rem] font-semibold uppercase ${r.commissioned ? "bg-warn-soft text-warn" : "bg-paper text-ink-soft"}`}>{v}</span>;
                     return canEditShipment ? <EditableCell id={r.id} raw={v} type="select" options={COMMISSION_OPTIONS} action={setShipmentCommission}>{badge}</EditableCell> : badge;
                   })()}
                 </td>
