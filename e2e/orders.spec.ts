@@ -2,7 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 
 async function login(page: Page) {
   await page.goto("/login");
-  await page.fill('input[name="email"]', "admin@abode.com");
+  await page.fill('input[name="email"]', "admin@example.com");
   await page.fill('input[name="password"]', "ChangeMe123!");
   await page.click('button[type="submit"]');
   await expect(page).toHaveURL(/\/dashboard/);

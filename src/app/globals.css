@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* ABD OMS — TenderPulse palette: brand red (#D32F2F) signal accent on a slate-neutral
+/* OMS — palette: brand red (#D32F2F) signal accent on a slate-neutral
    surface system (slate-800 ink, slate-200 lines, light-slate app background). */
 :root {
   --paper: #f4f6f9;
@@ -61,7 +61,7 @@ body {
     var(--paper);
 }
 
-/* Brand wordmark gradient (the accent "ABD"). */
+/* Brand wordmark gradient (the accent mark). */
 .brand-gradient {
   background: linear-gradient(120deg, var(--accent), #f0663f);
   -webkit-background-clip: text;
@@ -369,7 +369,7 @@ table tbody tr:hover {
   opacity: 0.85;
 }
 
-/* ── ABD brand surfaces ─────────────────────────────────────────────── */
+/* ── Brand surfaces ─────────────────────────────────────────────────── */
 
 /* 3D monogram badge — gradient square, inner highlight + drop shadow. */
 .brand-badge {

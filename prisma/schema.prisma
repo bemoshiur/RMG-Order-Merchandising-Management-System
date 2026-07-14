@@ -247,7 +247,7 @@ model Subscription {
   amountBdt        Int                   @default(3333) // monthly fee in BDT (whole taka)
   periodDays       Int                   @default(30)
   minMarginPct     Int                   @default(0) // org margin floor — confirm/costing-approval gate
-  planName         String                @default("ABD OMS — Managed SaaS")
+  planName         String                @default("OMS — Managed SaaS")
   planNotes        String                @default("Full SLA, all modifications & upgrades included.")
   currentPeriodEnd DateTime
   lastPaymentAt    DateTime?

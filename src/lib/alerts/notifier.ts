@@ -29,6 +29,6 @@ function resendNotifier(apiKey: string, from: string): Notifier {
 export function getNotifier(): Notifier {
   const key = process.env.RESEND_API_KEY;
   if (!key) return logNotifier;
-  const from = process.env.ALERT_EMAIL_FROM ?? "alerts@abodesourcingbd.com";
+  const from = process.env.ALERT_EMAIL_FROM ?? "alerts@example.com";
   return resendNotifier(key, from);
 }

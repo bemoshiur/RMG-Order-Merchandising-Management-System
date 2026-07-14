@@ -278,7 +278,7 @@ export function InvoicesPanel({
         >
           {shipmentId && <input type="hidden" name="shipmentId" value={shipmentId} />}
           <select name="type" required className="select text-xs" aria-label="Invoice type">
-            <option value="BUYER">BUYER (Abode→buyer)</option>
+            <option value="BUYER">BUYER (house→buyer)</option>
             <option value="FACTORY">FACTORY (payable)</option>
           </select>
           <input name="number" defaultValue={defaultNumber ?? ""} placeholder="Invoice number" required className="input text-xs" />

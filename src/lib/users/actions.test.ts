@@ -20,11 +20,11 @@ describe("createUser", () => {
   it("lets an Admin create a user with a hashed password", async () => {
     const user = await createUser(admin, {
       name: "Asha",
-      email: "Asha@Abode.com",
+      email: "Asha@example.com",
       password: "supersecret",
       role: "MERCHANDISER",
     });
-    expect(user.email).toBe("asha@abode.com"); // normalized lowercase
+    expect(user.email).toBe("asha@example.com"); // normalized lowercase
     const row = await prisma.user.findUniqueOrThrow({ where: { id: user.id } });
     expect(row.passwordHash).not.toBe("supersecret");
     expect(await verifyPassword("supersecret", row.passwordHash)).toBe(true);
@@ -34,7 +34,7 @@ describe("createUser", () => {
     await expect(
       createUser(merch, {
         name: "X",
-        email: "x@abode.com",
+        email: "x@example.com",
         password: "supersecret",
         role: "ACCOUNTS",
       }),
@@ -44,7 +44,7 @@ describe("createUser", () => {
   it("rejects a duplicate email", async () => {
     const input = {
       name: "A",
-      email: "dup@abode.com",
+      email: "dup@example.com",
       password: "supersecret",
       role: "ACCOUNTS" as const,
     };
@@ -55,7 +55,7 @@ describe("createUser", () => {
   it("writes an audit row on creation", async () => {
     const user = await createUser(admin, {
       name: "Bina",
-      email: "bina@abode.com",
+      email: "bina@example.com",
       password: "supersecret",
       role: "ACCOUNTS",
     });
@@ -83,7 +83,7 @@ describe("listUsers", () => {
   it("returns users without password hashes", async () => {
     await createUser(admin, {
       name: "C",
-      email: "c@abode.com",
+      email: "c@example.com",
       password: "supersecret",
       role: "ACCOUNTS",
     });
@@ -97,7 +97,7 @@ describe("setUserActive", () => {
   it("deactivates a user", async () => {
     const u = await createUser(admin, {
       name: "D",
-      email: "d@abode.com",
+      email: "d@example.com",
       password: "supersecret",
       role: "ACCOUNTS",
     });

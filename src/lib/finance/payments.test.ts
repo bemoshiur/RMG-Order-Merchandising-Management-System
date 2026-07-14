@@ -18,7 +18,7 @@ async function inv(amount: number) {
   const brand = await createBrand(admin, { buyerId: buyer.id, name: "TriDri", code: "TRIDRI" });
   const factory = await createFactory(admin, { name: "Liz", type: "KNIT" });
   const po = await createPurchaseOrder(admin, { poNumber: "209531", buyerId: buyer.id, brandId: brand.id, factoryId: factory.id });
-  return createInvoice(accounts, { type: "BUYER", number: "ABD-1", poId: po.id, amount, issueDate: d("2026-03-19") });
+  return createInvoice(accounts, { type: "BUYER", number: "INV-1", poId: po.id, amount, issueDate: d("2026-03-19") });
 }
 
 beforeEach(async () => { await resetDb(); });

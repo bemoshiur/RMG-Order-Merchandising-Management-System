@@ -1,4 +1,4 @@
-# Deploying ABD OMS to Vercel
+# Deploying PulseOMS to Vercel
 
 The repo is Vercel-ready: `vercel.json` runs DB migrations during the build and
 registers the daily alert cron; `postinstall` generates the Prisma client with the
@@ -17,7 +17,7 @@ database/branch for prod instead of reusing the dev one.)
 ## 2. Import the repo into Vercel
 
 1. https://vercel.com → **Add New… → Project** → import
-   `The-Public-Pulse-Agency/manage.abodesourcingbd.com`.
+   your `<your-org>/<your-repo>` GitHub repository.
 2. Framework preset: **Next.js** (auto-detected). Leave build/output settings default —
    `vercel.json` supplies the build command.
 
@@ -33,7 +33,7 @@ Add these for **Production** (and Preview if you use it):
 | `AUTH_TRUST_HOST` | `true` |
 | `CRON_SECRET` | `openssl rand -base64 32` (Vercel auto-sends it as `Bearer` to the cron route) |
 | `RESEND_API_KEY` | your Resend key (rotate the one shared in chat) |
-| `ALERT_EMAIL_FROM` | `ABD OMS Alerts <alerts@mail.abodesourcingbd.com>` (verified domain) |
+| `ALERT_EMAIL_FROM` | `OMS Alerts <alerts@mail.example.com>` (your verified domain) |
 
 > Do **not** commit any of these — `.env*` is gitignored.
 
@@ -50,7 +50,7 @@ A fresh prod DB has no users. From your machine, pointing at the **prod** DB:
 DATABASE_URL="<prod-direct-url>" DIRECT_URL="<prod-direct-url>" npm run db:seed
 ```
 
-This creates `admin@abode.com / ChangeMe123!` + default size scales/colours/T&A
+This creates `admin@example.com / ChangeMe123!` + default size scales/colours/T&A
 templates. **Log in and change that password immediately.**
 
 ## 6. Verify the cron

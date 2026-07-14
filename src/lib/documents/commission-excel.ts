@@ -1,4 +1,5 @@
 import ExcelJS from "exceljs";
+import { BRAND_FULL } from "@/lib/brand";
 import { prisma } from "@/lib/db";
 import { assertPermission, tenantId, type SessionUser } from "@/lib/auth/guard";
 import { companyForDocument } from "@/lib/company/profile";
@@ -24,7 +25,7 @@ export async function buildCommissionInvoiceWorkbook(actor: SessionUser, id: str
   const commission = Math.round(factoryValue * pct) / 100; // value × pct%
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = "ABD Sourcing";
+  wb.creator = BRAND_FULL;
   const ws = wb.addWorksheet("Commission Invoice");
   ws.columns = [{ width: 40 }, { width: 18 }, { width: 16 }, { width: 16 }];
 

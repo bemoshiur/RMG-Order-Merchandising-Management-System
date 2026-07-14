@@ -1,3 +1,5 @@
+import { BRAND } from "@/lib/brand";
+
 const SIZE: Record<"sm" | "base" | "lg", string> = {
   sm: "text-sm",
   base: "text-base",
@@ -16,8 +18,8 @@ export function BrandMark({
   return (
     <span className={`inline-flex flex-col leading-tight ${className}`}>
       <span className={`${SIZE[size]} tracking-tight`}>
-        <span className="brand-gradient font-mono font-bold">ABD</span>
-        <span className="font-semibold"> Sourcing</span>
+        <span className="brand-gradient font-mono font-bold">{BRAND.mark}</span>
+        <span className="font-semibold">{BRAND.name}</span>
       </span>
       {tagline && <span className="mt-0.5 text-xs font-normal text-ink-soft">{tagline}</span>}
     </span>
@@ -30,7 +32,7 @@ export function BrandBadge({ className = "h-11 w-11 text-xs" }: { className?: st
       aria-hidden="true"
       className={`brand-badge inline-flex items-center justify-center rounded-xl font-mono font-bold text-white ${className}`}
     >
-      ABD
+      {BRAND.badge}
     </span>
   );
 }

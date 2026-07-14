@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { BRAND } from "@/lib/brand";
 
 export function GET() {
   return new ImageResponse(
@@ -18,7 +19,7 @@ export function GET() {
           fontFamily: "monospace",
         }}
       >
-        ABD
+        {BRAND.badge}
       </div>
     ),
     { width: 192, height: 192 },

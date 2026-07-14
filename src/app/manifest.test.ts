@@ -2,10 +2,10 @@ import { describe, it, expect } from "vitest";
 import manifest from "./manifest";
 
 describe("manifest", () => {
-  it("describes an installable ABD Sourcing PWA", () => {
+  it("describes an installable PWA (generic brand defaults)", () => {
     const m = manifest();
-    expect(m.name).toBe("ABD Sourcing");
-    expect(m.short_name).toBe("ABD");
+    expect(m.name).toBe("PulseOMS");
+    expect(m.short_name).toBe("Pulse");
     expect(m.display).toBe("standalone");
     expect(m.start_url).toBe("/");
     expect(m.theme_color).toBe("#d32f2f");

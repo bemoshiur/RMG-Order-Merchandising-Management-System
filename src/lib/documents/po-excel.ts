@@ -1,4 +1,5 @@
 import ExcelJS from "exceljs";
+import { BRAND_FULL } from "@/lib/brand";
 import { getPurchaseOrder } from "@/lib/orders/po";
 import type { SessionUser } from "@/lib/auth/guard";
 
@@ -12,7 +13,7 @@ export async function buildPoWorkbook(actor: SessionUser, poId: string): Promise
   if (!po) return null;
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = "ABD Sourcing";
+  wb.creator = BRAND_FULL;
   const ws = wb.addWorksheet("Purchase Order");
   ws.columns = [{ width: 26 }, { width: 18 }, { width: 12 }, { width: 12 }, { width: 14 }, { width: 16 }];
 

@@ -87,7 +87,7 @@ describe("dashboardSummary", () => {
     });
 
     // Overdue invoice (issued 100d ago) + a current one
-    await createInvoice(accounts, { type: "BUYER", number: "ABD-1", poId: live.id, amount: 200, issueDate: d("2026-03-07") });
+    await createInvoice(accounts, { type: "BUYER", number: "INV-1", poId: live.id, amount: 200, issueDate: d("2026-03-07") });
     await createInvoice(accounts, { type: "FACTORY", number: "LFI-1", poId: live.id, amount: 150, issueDate: d("2026-06-10") });
 
     const s = await dashboardSummary(admin, { now: NOW });
@@ -103,7 +103,7 @@ describe("dashboardSummary", () => {
     expect(s.exceptions.dueSoonMilestones).toBe(1);
     expect(s.exceptions.telexPending).toHaveLength(1);
     expect(s.exceptions.telexPending[0].blNumber).toBe("BL-1");
-    expect(s.exceptions.paymentOverdue).toBe(1); // ABD-1 aged 100d; LFI-1 is 0-30
+    expect(s.exceptions.paymentOverdue).toBe(1); // INV-1 aged 100d; LFI-1 is 0-30
   });
 
   it("realises a PO's margin from the payment ledger, not the invoice status flag", async () => {

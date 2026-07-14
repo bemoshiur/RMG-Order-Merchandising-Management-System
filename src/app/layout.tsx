@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { BRAND_FULL } from "@/lib/brand";
 import "./globals.css";
 
 const plexSans = IBM_Plex_Sans({
@@ -15,9 +16,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ABD Sourcing — Order & Merchandising",
-  description: "Order & merchandising management for ABD Sourcing",
-  appleWebApp: { capable: true, title: "ABD Sourcing", statusBarStyle: "default" },
+  title: `${BRAND_FULL} — Order & Merchandising`,
+  description: `Order & merchandising management for ${BRAND_FULL}`,
+  appleWebApp: { capable: true, title: BRAND_FULL, statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = { themeColor: "#d32f2f" };

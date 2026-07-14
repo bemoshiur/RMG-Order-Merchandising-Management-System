@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { BRAND } from "@/lib/brand";
 
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
@@ -21,7 +22,7 @@ export default function AppleIcon() {
           fontFamily: "monospace",
         }}
       >
-        ABD
+        {BRAND.badge}
       </div>
     ),
     { ...size },

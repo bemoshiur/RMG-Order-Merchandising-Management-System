@@ -6,6 +6,7 @@ import { listPackages } from "@/lib/platform/packages";
 import { logoutAction } from "@/lib/auth/actions";
 import { PlatformConsole, type CompanyRow, type PackageRow } from "@/components/platform-console";
 import { BrandMark } from "@/components/brand-mark";
+import { BRAND_FULL } from "@/lib/brand";
 import { formatDate } from "@/lib/format";
 
 export default async function AdminConsolePage() {
@@ -52,7 +53,7 @@ export default async function AdminConsolePage() {
         <div>
           <p className="eyebrow">Super admin</p>
           <h1 className="text-2xl font-semibold tracking-tight">Platform console</h1>
-          <p className="mt-1 text-sm text-ink-soft">Manage tenant companies, subscription packages, and billing across all of ABD Sourcing.</p>
+          <p className="mt-1 text-sm text-ink-soft">Manage tenant companies, subscription packages, and billing across all of {BRAND_FULL}.</p>
         </div>
         <PlatformConsole companies={companyRows} packages={packageRows} />
       </main>

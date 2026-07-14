@@ -31,15 +31,15 @@ afterAll(async () => { await prisma.$disconnect(); });
 
 it("Accounts creates buyer + factory invoices and lists them", async () => {
   const po = await seedPo();
-  await createInvoice(accounts, { type: "BUYER", number: "ABD-001", poId: po.id, amount: 1000, issueDate: d("2026-03-19") });
+  await createInvoice(accounts, { type: "BUYER", number: "INV-001", poId: po.id, amount: 1000, issueDate: d("2026-03-19") });
   await createInvoice(accounts, { type: "FACTORY", number: "LFI-1", poId: po.id, amount: 800, issueDate: d("2026-03-19") });
   expect(await listInvoices(accounts, {})).toHaveLength(2);
 });
 
 it("rejects duplicate (type, number)", async () => {
   const po = await seedPo();
-  await createInvoice(accounts, { type: "BUYER", number: "ABD-001", poId: po.id, amount: 1, issueDate: d("2026-03-19") });
-  await expect(createInvoice(accounts, { type: "BUYER", number: "ABD-001", poId: po.id, amount: 1, issueDate: d("2026-03-19") })).rejects.toThrow(/already exists/i);
+  await createInvoice(accounts, { type: "BUYER", number: "INV-001", poId: po.id, amount: 1, issueDate: d("2026-03-19") });
+  await expect(createInvoice(accounts, { type: "BUYER", number: "INV-001", poId: po.id, amount: 1, issueDate: d("2026-03-19") })).rejects.toThrow(/already exists/i);
 });
 
 it("rejects an invoice linked to nothing, and an unknown PO", async () => {
@@ -55,7 +55,7 @@ it("forbids Merchandiser (finance view-only) from creating", async () => {
 describe("marking an invoice PAID auto-records the outstanding payment", () => {
   it("records a payment for the full amount when no payments exist", async () => {
     const po = await seedPo();
-    const i = await createInvoice(accounts, { type: "BUYER", number: "ABD-PAID", poId: po.id, amount: 1000, issueDate: d("2026-03-19") });
+    const i = await createInvoice(accounts, { type: "BUYER", number: "INV-PAID", poId: po.id, amount: 1000, issueDate: d("2026-03-19") });
     await updateInvoiceFields(accounts, i.id, { status: "PAID" });
 
     const inv = await prisma.invoice.findUniqueOrThrow({ where: { id: i.id }, include: { payments: true } });
@@ -67,7 +67,7 @@ describe("marking an invoice PAID auto-records the outstanding payment", () => {
 
   it("records only the remaining balance when a partial payment already exists", async () => {
     const po = await seedPo();
-    const i = await createInvoice(accounts, { type: "BUYER", number: "ABD-PART", poId: po.id, amount: 1000, issueDate: d("2026-03-19") });
+    const i = await createInvoice(accounts, { type: "BUYER", number: "INV-PART", poId: po.id, amount: 1000, issueDate: d("2026-03-19") });
     await recordPayment(accounts, i.id, { amount: 400, date: d("2026-04-01"), method: "TT" });
     await updateInvoiceFields(accounts, i.id, { status: "PAID" });
 
@@ -80,7 +80,7 @@ describe("marking an invoice PAID auto-records the outstanding payment", () => {
 
   it("is idempotent — no extra payment when already fully paid", async () => {
     const po = await seedPo();
-    const i = await createInvoice(accounts, { type: "BUYER", number: "ABD-FULL", poId: po.id, amount: 500, issueDate: d("2026-03-19") });
+    const i = await createInvoice(accounts, { type: "BUYER", number: "INV-FULL", poId: po.id, amount: 500, issueDate: d("2026-03-19") });
     await recordPayment(accounts, i.id, { amount: 500, date: d("2026-04-01"), method: "TT" });
     await updateInvoiceFields(accounts, i.id, { status: "PAID" });
 

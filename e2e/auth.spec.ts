@@ -7,7 +7,7 @@ test("unauthenticated user is redirected to login", async ({ page }) => {
 
 test("admin can log in, see Users nav, and log out", async ({ page }) => {
   await page.goto("/login");
-  await page.fill('input[name="email"]', "admin@abode.com");
+  await page.fill('input[name="email"]', "admin@example.com");
   await page.fill('input[name="password"]', "ChangeMe123!");
   await page.click('button[type="submit"]');
 

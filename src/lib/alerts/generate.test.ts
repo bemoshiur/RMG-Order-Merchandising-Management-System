@@ -38,7 +38,7 @@ async function seedSources() {
   // overdue milestone (merch) + the live PO is also ex-fty-soon AND doc-missing (merch x2)
   await prisma.taMilestone.create({ data: { companyId: "test-co", poId: live.id, key: "pp_sample", name: "PP sample", stage: "SAMPLING", position: 6, plannedDate: d("2026-06-10") } });
   // overdue invoice (accounts)
-  await createInvoice(accounts, { type: "BUYER", number: "ABD-1", poId: live.id, amount: 200, issueDate: d("2026-03-07") });
+  await createInvoice(accounts, { type: "BUYER", number: "INV-1", poId: live.id, amount: 200, issueDate: d("2026-03-07") });
   return live;
 }
 
@@ -51,9 +51,9 @@ afterAll(async () => {
 
 describe("generateAlerts", () => {
   it("fans out to active recipients by role and emails one digest each", async () => {
-    const merch = await user("merch@abode.com", "MERCHANDISER");
-    const merchOff = await user("off@abode.com", "MERCHANDISER", false); // inactive
-    const acc = await user("acc@abode.com", "ACCOUNTS");
+    const merch = await user("merch@example.com", "MERCHANDISER");
+    const merchOff = await user("off@example.com", "MERCHANDISER", false); // inactive
+    const acc = await user("acc@example.com", "ACCOUNTS");
     await seedSources();
 
     const { sent, notifier } = capturingNotifier();
@@ -66,13 +66,13 @@ describe("generateAlerts", () => {
     expect(await prisma.notification.count({ where: { userId: merchOff.id } })).toBe(0); // inactive excluded
 
     // one digest per recipient with new rows
-    expect(sent.map((s) => s.to).sort()).toEqual(["acc@abode.com", "merch@abode.com"]);
-    expect(sent.find((s) => s.to === "merch@abode.com")?.subject).toContain("3 new");
+    expect(sent.map((s) => s.to).sort()).toEqual(["acc@example.com", "merch@example.com"]);
+    expect(sent.find((s) => s.to === "merch@example.com")?.subject).toContain("3 new");
   });
 
   it("is idempotent: a second run creates 0 rows and sends 0 emails", async () => {
-    await user("merch@abode.com", "MERCHANDISER");
-    await user("acc@abode.com", "ACCOUNTS");
+    await user("merch@example.com", "MERCHANDISER");
+    await user("acc@example.com", "ACCOUNTS");
     await seedSources();
 
     const first = await generateAlerts({ now: NOW });
@@ -86,7 +86,7 @@ describe("generateAlerts", () => {
   });
 
   it("does not abort the run when an email send throws", async () => {
-    await user("merch@abode.com", "MERCHANDISER");
+    await user("merch@example.com", "MERCHANDISER");
     await seedSources();
     const boom: Notifier = { async email() { throw new Error("smtp down"); } };
     const { created } = await generateAlerts({ now: NOW, notifier: boom });

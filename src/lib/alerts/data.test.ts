@@ -48,7 +48,7 @@ describe("fetchAlertData", () => {
     await prisma.sampleRequest.create({ data: { companyId: "test-co", poId: live.id, type: "FIT", status: "PENDING", sentDate: null } });
 
     // overdue invoice (issued 100d ago, unpaid) + a current one
-    await createInvoice(accounts, { type: "BUYER", number: "ABD-1", poId: live.id, amount: 200, issueDate: d("2026-03-07") });
+    await createInvoice(accounts, { type: "BUYER", number: "INV-1", poId: live.id, amount: 200, issueDate: d("2026-03-07") });
     await createInvoice(accounts, { type: "FACTORY", number: "LFI-1", poId: live.id, amount: 150, issueDate: d("2026-06-10") });
 
     const data = await fetchAlertData(NOW, "test-co");
@@ -57,7 +57,7 @@ describe("fetchAlertData", () => {
     expect(data.exFtySoon.map((p) => p.poNumber)).toEqual(["P-LIVE"]);
     expect(data.samplesPending).toHaveLength(1); // only the sent one
     expect(data.samplesPending[0].type).toBe("PP");
-    expect(data.paymentsOverdue.map((p) => p.number)).toEqual(["ABD-1"]);
+    expect(data.paymentsOverdue.map((p) => p.number)).toEqual(["INV-1"]);
     expect(data.docsMissing.map((p) => p.poNumber)).toEqual(["P-LIVE"]); // no BL/CI/PL doc
   });
 

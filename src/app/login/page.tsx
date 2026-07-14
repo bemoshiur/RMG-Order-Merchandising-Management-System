@@ -1,4 +1,5 @@
 import { BrandMark, BrandBadge } from "@/components/brand-mark";
+import { BRAND } from "@/lib/brand";
 import { LoginForm } from "./login-form";
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ welcome?: string }> }) {
@@ -17,11 +18,13 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         )}
         <h1 className="mt-6 mb-4 text-lg font-semibold tracking-tight">Sign in</h1>
         <LoginForm />
-        <p className="mt-6 border-t border-line pt-4 text-center text-sm text-ink-soft">
-          <a href="https://www.abodesourcingbd.com/" target="_blank" rel="noopener noreferrer" className="font-medium text-accent hover:underline">
-            Visit abodesourcingbd.com →
-          </a>
-        </p>
+        {BRAND.url && (
+          <p className="mt-6 border-t border-line pt-4 text-center text-sm text-ink-soft">
+            <a href={BRAND.url} target="_blank" rel="noopener noreferrer" className="font-medium text-accent hover:underline">
+              Visit {BRAND.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")} →
+            </a>
+          </p>
+        )}
       </div>
     </main>
   );

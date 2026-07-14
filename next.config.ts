@@ -5,8 +5,8 @@ const isDev = process.env.NODE_ENV !== "production";
 /**
  * Content-Security-Policy.
  * The app loads NO third-party browser resources (fonts/scripts/styles are all self-hosted;
- * the EPS payment gateway and abodesourcingbd.com are reached by top-level navigation, not
- * fetch/frame, so they need no directive). That lets us keep a tight policy:
+ * the EPS payment gateway and the optional marketing site are reached by top-level navigation,
+ * not fetch/frame, so they need no directive). That lets us keep a tight policy:
  *  - `frame-ancestors 'none'` + `X-Frame-Options: DENY` — clickjacking protection.
  *  - `object-src 'none'`, `base-uri 'self'`, `form-action 'self'` — injection hardening.
  *  - `'unsafe-inline'` is required for Next's inline bootstrap script + Tailwind's inline styles

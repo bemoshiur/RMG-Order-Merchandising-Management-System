@@ -35,7 +35,7 @@ const ITEMS: { href: string; label: string; module: Parameters<typeof can>[1]; i
   { href: "/audit", label: "Activity Log", module: "auditLog", icon: "❑" },
 ];
 
-export function AppSidebar({ role, permissions, name, unread = 0 }: { role: Role; permissions?: PermissionMap | null; name: string; unread?: number }) {
+export function AppSidebar({ role, permissions, name, unread = 0, billingEnabled = false }: { role: Role; permissions?: PermissionMap | null; name: string; unread?: number; billingEnabled?: boolean }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const actor = { role, permissions };
@@ -88,7 +88,7 @@ export function AppSidebar({ role, permissions, name, unread = 0 }: { role: Role
           <span>Settings</span>
         </Link>
       )}
-      {role === "ADMIN" && (
+      {role === "ADMIN" && billingEnabled && (
         <Link
           href="/billing"
           onClick={() => setOpen(false)}

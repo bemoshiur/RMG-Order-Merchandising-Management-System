@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
+import { BRAND, BRAND_FULL } from "@/lib/brand";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "ABD Sourcing",
-    short_name: "ABD",
-    description: "Order & merchandising management — ABD Sourcing",
+    name: BRAND_FULL,
+    short_name: BRAND.mark,
+    description: `Order & merchandising management — ${BRAND_FULL}`,
     start_url: "/",
     display: "standalone",
     background_color: "#f4f6f9",

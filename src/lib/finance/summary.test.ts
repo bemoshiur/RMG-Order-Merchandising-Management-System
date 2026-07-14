@@ -24,19 +24,19 @@ afterAll(async () => { await prisma.$disconnect(); });
 
 it("computes AR / AP outstanding and aging buckets", async () => {
   const order = await po("209531");
-  const b = await createInvoice(accounts, { type: "BUYER", number: "ABD-1", poId: order.id, amount: 1000, issueDate: d("2026-04-01") });
+  const b = await createInvoice(accounts, { type: "BUYER", number: "INV-1", poId: order.id, amount: 1000, issueDate: d("2026-04-01") });
   await recordPayment(accounts, b.id, { amount: 400, date: d("2026-04-10"), method: "TT" });
   await createInvoice(accounts, { type: "FACTORY", number: "LFI-1", poId: order.id, amount: 800, issueDate: d("2026-01-01") });
   const s = await financeSummary(accounts, { now: d("2026-06-15") });
   expect(s.receivableOutstanding).toBe(600);
   expect(s.payableOutstanding).toBe(800);
-  expect(s.aging.find((a) => a.number === "ABD-1")?.bucket).toBe("61-90"); // 1 Apr -> 75d
+  expect(s.aging.find((a) => a.number === "INV-1")?.bucket).toBe("61-90"); // 1 Apr -> 75d
   expect(s.aging.find((a) => a.number === "LFI-1")?.bucket).toBe("90+"); // 1 Jan -> 165d
 });
 
 it("realises margin only when both buyer and factory invoices are PAID", async () => {
   const order = await po("209531");
-  const b = await createInvoice(accounts, { type: "BUYER", number: "ABD-1", poId: order.id, amount: 1000, issueDate: d("2026-04-01") });
+  const b = await createInvoice(accounts, { type: "BUYER", number: "INV-1", poId: order.id, amount: 1000, issueDate: d("2026-04-01") });
   const f = await createInvoice(accounts, { type: "FACTORY", number: "LFI-1", poId: order.id, amount: 800, issueDate: d("2026-04-01") });
   await recordPayment(accounts, b.id, { amount: 1000, date: d("2026-05-01"), method: "TT" });
   // factory not yet paid -> not realised

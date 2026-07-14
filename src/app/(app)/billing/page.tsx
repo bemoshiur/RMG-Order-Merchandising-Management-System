@@ -13,6 +13,8 @@ const RESULT_MSG: Record<string, { text: string; tone: string }> = {
 };
 
 export default async function BillingPage({ searchParams }: { searchParams: Promise<{ result?: string }> }) {
+  // Billing/subscription is hidden unless explicitly enabled; guard the route directly too.
+  if (process.env.BILLING_ENABLED !== "1") redirect("/dashboard");
   const actor = await getCurrentUser();
   if (!actor) redirect("/login");
   const isAdmin = actor.role === "ADMIN";

@@ -1,4 +1,5 @@
 import ExcelJS from "exceljs";
+import { BRAND_FULL } from "@/lib/brand";
 import { prisma } from "@/lib/db";
 import { assertPermission, tenantId, type SessionUser } from "@/lib/auth/guard";
 import { companyForDocument } from "@/lib/company/profile";
@@ -59,7 +60,7 @@ export async function buildInvoiceWorkbook(actor: SessionUser, invoiceId: string
   }
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = "ABD Sourcing";
+  wb.creator = BRAND_FULL;
   const ws = wb.addWorksheet("Invoice");
   ws.columns = [{ width: 26 }, { width: 18 }, { width: 12 }, { width: 12 }, { width: 14 }, { width: 16 }];
 

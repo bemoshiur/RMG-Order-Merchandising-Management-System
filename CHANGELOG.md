@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to **Pulse OMS** (Abode Sourcing order-management system) are recorded here.
+All notable changes to **PulseOMS** (RMG order-management system) are recorded here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/); this project ships continuously
 to `main` (Vercel auto-deploy) rather than tagged releases, so entries are grouped by date.

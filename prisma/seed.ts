@@ -5,9 +5,15 @@ import { DEFAULT_TEMPLATES } from "../src/lib/tna/template-data";
 const prisma = new PrismaClient();
 
 async function main() {
+  // Generic defaults; override via env so real identities never live in the repo.
+  const companyName = process.env.SEED_COMPANY_NAME ?? "Demo Sourcing";
+  const companySlug = process.env.SEED_COMPANY_SLUG ?? "demo";
+  const adminEmail = (process.env.SEED_ADMIN_EMAIL ?? "admin@example.com").toLowerCase();
+  const superEmail = (process.env.SEED_SUPERADMIN_EMAIL ?? "super@example.com").toLowerCase();
+
   // First tenant company.
-  let company = await prisma.company.findFirst({ where: { slug: "abode" } });
-  if (!company) company = await prisma.company.create({ data: { name: "Abode Sourcing", slug: "abode" } });
+  let company = await prisma.company.findFirst({ where: { slug: companySlug } });
+  if (!company) company = await prisma.company.create({ data: { name: companyName, slug: companySlug } });
   const companyId = company.id;
 
   // Default package + link.
@@ -17,16 +23,16 @@ async function main() {
 
   // Company admin + platform super admin.
   await prisma.user.upsert({
-    where: { email: "admin@abode.com" },
+    where: { email: adminEmail },
     update: {},
-    create: { name: "Admin", email: "admin@abode.com", role: "ADMIN", passwordHash: await bcrypt.hash("ChangeMe123!", 10), companyId },
+    create: { name: "Admin", email: adminEmail, role: "ADMIN", passwordHash: await bcrypt.hash("ChangeMe123!", 10), companyId },
   });
   await prisma.user.upsert({
-    where: { email: "super@pulseoms.com" },
+    where: { email: superEmail },
     update: {},
-    create: { name: "Platform Super Admin", email: "super@pulseoms.com", role: "SUPERADMIN", passwordHash: await bcrypt.hash("ChangeMe-Super-123!", 10), companyId: null },
+    create: { name: "Platform Super Admin", email: superEmail, role: "SUPERADMIN", passwordHash: await bcrypt.hash("ChangeMe-Super-123!", 10), companyId: null },
   });
-  console.log("Seeded company Abode Sourcing + admin@abode.com + super@pulseoms.com");
+  console.log(`Seeded company ${companyName} + ${adminEmail} + ${superEmail}`);
 
   // Default size scales (per company).
   const scales: Record<string, string[]> = {

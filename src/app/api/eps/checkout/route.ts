@@ -10,7 +10,7 @@ export async function POST(): Promise<Response> {
   if (actor.role !== "ADMIN") return Response.json({ error: "Only an admin can pay the subscription" }, { status: 403 });
 
   const user = await prisma.user.findUnique({ where: { id: actor.id }, select: { email: true } });
-  const email = user?.email || "admin@abode.com";
+  const email = user?.email || "admin@example.com";
 
   const res = await startRenewal(actor, email);
   if (!res.ok) {
