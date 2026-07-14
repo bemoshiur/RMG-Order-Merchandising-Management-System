@@ -37,13 +37,23 @@ export function assertPermission(
  * Reads the current session user (or null). Resolves the actor's permission map from its
  * role so authorization is dynamic (custom roles supported). `auth`/role resolution are
  * imported lazily so pure unit tests of assertPermission don't load the next-auth runtime.
+ *
+ * The JWT is trusted only to identify the user; role, company and active-status are re-read
+ * from the DB on every call so that disabling a user, deleting them, or changing their role
+ * takes effect immediately instead of lingering until the token expires (session revocation).
  */
 export async function getCurrentUser(): Promise<SessionUser | null> {
   const { auth } = await import("@/auth");
   const session = await auth();
-  if (!session?.user) return null;
-  const companyId = session.user.companyId ?? null;
-  const role = session.user.role;
+  if (!session?.user?.id) return null;
+  const { prisma } = await import("@/lib/db");
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { active: true, role: true, companyId: true },
+  });
+  if (!dbUser || !dbUser.active) return null;
+  const companyId = dbUser.companyId ?? null;
+  const role = dbUser.role as Role;
   const { resolvePermissions } = await import("./roles");
   const permissions = await resolvePermissions(companyId, role);
   return { id: session.user.id, role, companyId, permissions };

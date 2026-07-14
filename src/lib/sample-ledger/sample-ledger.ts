@@ -107,6 +107,7 @@ export async function updateMovementField(actor: SessionUser, id: string, field:
   } else throw new Error("Invalid field");
 
   await prisma.sampleMovement.update({ where: { id }, data });
+  await recordAudit({ userId: actor.id, entityType: "SampleMovement", entityId: id, action: "edit", after: { [field]: value } });
 }
 
 export async function deleteMovement(actor: SessionUser, id: string) {

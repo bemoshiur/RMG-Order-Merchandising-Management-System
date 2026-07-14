@@ -19,8 +19,8 @@ export function CountUp({ value, format = "qty", className }: { value: number; f
   useEffect(() => {
     if (started.current) return;
     started.current = true;
+    // Reduced motion: leave n at its initial value (useState(value)) — no animation, no setState.
     if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
-      setN(value);
       return;
     }
     let raf = 0;
@@ -32,6 +32,9 @@ export function CountUp({ value, format = "qty", className }: { value: number; f
       setN(value * eased);
       if (p < 1) raf = requestAnimationFrame(tick);
     };
+    // Deliberate one-time reset so the value animates from 0 (initial state is `value` to avoid a
+    // no-JS/SSR flash). This is the intended single render, not an accidental cascade.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setN(0);
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);

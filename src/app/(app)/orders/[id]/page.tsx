@@ -228,7 +228,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
       {canEdit && !isDraft && (
         <p className="rounded-sm border border-warn bg-warn-soft px-4 py-2 text-xs font-medium text-warn">
-          ⚠ Admin override — this {po.status} order's lines/prices are editable. Changes restate its value, balance &amp; margin.
+          ⚠ Admin override — this {po.status} order&apos;s lines/prices are editable. Changes restate its value, balance &amp; margin.
         </p>
       )}
       {canEdit && (

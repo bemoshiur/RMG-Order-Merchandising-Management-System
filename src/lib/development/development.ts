@@ -60,6 +60,7 @@ export async function updateDevelopmentField(actor: SessionUser, id: string, fie
   } else if ((TEXT_FIELDS as readonly string[]).includes(field)) data[field] = value.trim() || null;
   else throw new Error("Invalid field");
   await prisma.developmentItem.update({ where: { id }, data });
+  await recordAudit({ userId: actor.id, entityType: "DevelopmentItem", entityId: id, action: "edit", after: { [field]: value } });
 }
 
 export async function deleteDevelopment(actor: SessionUser, id: string) {

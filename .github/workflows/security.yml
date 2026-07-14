@@ -1,0 +1,32 @@
+name: Security
+
+# Security gates that need no database: dependency vulnerability scan + static analysis.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      # `npm ci` runs the `postinstall` prisma generate; that needs the schema, not a live DB.
+      - name: Install dependencies
+        run: npm ci
+
+      # Fail the build on any high/critical advisory in the dependency tree.
+      - name: Dependency vulnerability scan (npm audit)
+        run: npm audit --audit-level=high
+
+      # eslint-plugin-security: eval-with-expression, child_process, non-literal fs paths,
+      # unsafe regex, insecure randomness, buffer noassert, etc.
+      - name: Static security analysis (eslint)
+        run: npm run lint

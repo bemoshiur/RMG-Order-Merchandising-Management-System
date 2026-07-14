@@ -63,6 +63,7 @@ export async function updateCommissionField(actor: SessionUser, id: string, fiel
   else if ((DATE as readonly string[]).includes(field)) data[field] = value ? new Date(`${value}T00:00:00.000Z`) : null;
   else throw new Error("Invalid field");
   await prisma.commissionEntry.update({ where: { id }, data });
+  await recordAudit({ userId: actor.id, entityType: "CommissionEntry", entityId: id, action: "edit", after: { [field]: value } });
 }
 
 export async function deleteCommission(actor: SessionUser, id: string) {

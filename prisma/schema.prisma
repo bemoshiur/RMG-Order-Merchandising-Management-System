@@ -296,9 +296,13 @@ model AuditLog {
   action     String
   before     Json?
   after      Json?
+  ip         String?  // client IP (x-forwarded-for), best-effort
+  userAgent  String?  // client user-agent, best-effort
   createdAt  DateTime @default(now())
 
   @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
 }
 
 enum FactoryType {

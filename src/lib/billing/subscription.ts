@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { recordAudit } from "@/lib/audit";
 import { ForbiddenError, tenantId, type SessionUser } from "@/lib/auth/guard";
 import { initiateEps, verifyEps, isPaymentBlocked, epsConfigured, type InitiateResult } from "@/lib/eps";
 import type { Subscription } from "@prisma/client";
@@ -53,7 +54,10 @@ export async function updatePlan(
   if (input.planName) data.planName = input.planName.trim();
   if (input.planNotes !== undefined) data.planNotes = input.planNotes.trim();
   if (input.minMarginPct !== undefined && input.minMarginPct >= 0) data.minMarginPct = Math.round(input.minMarginPct);
-  return prisma.subscription.update({ where: { id: companyId }, data });
+  const updated = await prisma.subscription.update({ where: { id: companyId }, data });
+  // Audit — the margin floor here gates costing approval, so plan/amount/margin edits must be traceable.
+  await recordAudit({ userId: actor.id, entityType: "Subscription", entityId: companyId, action: "edit", after: JSON.parse(JSON.stringify(data)) });
+  return updated;
 }
 
 export type StartRenewalResult = InitiateResult & { orderId: string };
@@ -64,14 +68,11 @@ export async function startRenewal(actor: SessionUser, customerEmail: string): P
   const companyId = tenantId(actor);
   const sub = await getSubscription(companyId);
   const orderId = `PULSE-SUB-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`.toUpperCase();
+  const status = isPaymentBlocked() || !epsConfigured() ? "BLOCKED" : "PENDING";
   await prisma.subscriptionPayment.create({
-    data: {
-      orderId,
-      subscriptionId: companyId,
-      amountBdt: sub.amountBdt,
-      status: isPaymentBlocked() || !epsConfigured() ? "BLOCKED" : "PENDING",
-    },
+    data: { orderId, subscriptionId: companyId, amountBdt: sub.amountBdt, status },
   });
+  await recordAudit({ userId: actor.id, entityType: "SubscriptionPayment", entityId: orderId, action: "create", after: { amountBdt: sub.amountBdt, status } });
   const res = await initiateEps({
     orderId,
     amountBdt: sub.amountBdt,
@@ -93,6 +94,8 @@ export async function settleRenewal(orderId: string): Promise<SettleResult> {
 
   if (!verified.paid) {
     await prisma.subscriptionPayment.update({ where: { orderId }, data: { status: "FAILED", epsRef: verified.epsRef } });
+    // System-driven settlement (no actor) — record so failed charge attempts are visible in the trail.
+    await recordAudit({ userId: null, entityType: "SubscriptionPayment", entityId: orderId, action: "edit", after: { status: "FAILED", epsRef: verified.epsRef } });
     return "failed";
   }
 
@@ -106,5 +109,7 @@ export async function settleRenewal(orderId: string): Promise<SettleResult> {
     prisma.subscriptionPayment.update({ where: { orderId }, data: { status: "PAID", epsRef: verified.epsRef, paidAt: now } }),
     prisma.subscription.update({ where: { id: companyId }, data: { status: "ACTIVE", currentPeriodEnd: newEnd, lastPaymentAt: now } }),
   ]);
+  // System-driven settlement (no actor) — record the confirmed payment + period extension.
+  await recordAudit({ userId: null, entityType: "SubscriptionPayment", entityId: orderId, action: "approve", after: { status: "PAID", amountBdt: sub.amountBdt, epsRef: verified.epsRef, currentPeriodEnd: newEnd.toISOString() } });
   return "paid";
 }

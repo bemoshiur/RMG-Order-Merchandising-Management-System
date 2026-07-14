@@ -67,6 +67,7 @@ export async function updateBuyerSampleField(actor: SessionUser, id: string, fie
     data[field] = value.trim() || null;
   } else throw new Error("Invalid field");
   await prisma.buyerSampleDispatch.update({ where: { id }, data });
+  await recordAudit({ userId: actor.id, entityType: "BuyerSampleDispatch", entityId: id, action: "edit", after: { [field]: value } });
 }
 
 export async function deleteBuyerSample(actor: SessionUser, id: string) {

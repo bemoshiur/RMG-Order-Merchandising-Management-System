@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/guard";
 import { listCompanies } from "@/lib/platform/companies";
@@ -39,9 +40,12 @@ export default async function AdminConsolePage() {
             <BrandMark size="base" />
             <span className="ml-2 rounded-sm bg-accent-soft px-2 py-0.5 text-[0.625rem] font-semibold uppercase text-accent">Platform</span>
           </div>
-          <form action={logoutAction}>
-            <button type="submit" className="rounded-sm border border-line px-2.5 py-1 text-xs hover:border-accent hover:text-accent">Sign out</button>
-          </form>
+          <div className="flex items-center gap-3">
+            <Link href="/admin/audit" className="text-xs font-medium text-accent hover:underline">System audit →</Link>
+            <form action={logoutAction}>
+              <button type="submit" className="rounded-sm border border-line px-2.5 py-1 text-xs hover:border-accent hover:text-accent">Sign out</button>
+            </form>
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-6xl space-y-6 p-6">

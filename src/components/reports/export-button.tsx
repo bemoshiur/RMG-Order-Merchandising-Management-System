@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { escapeCsvCell } from "@/lib/reports/csv";
 
 type Base = { filename: string; headers: string[] };
 type Props =
@@ -12,11 +13,7 @@ export function ExportButton({ filename, headers, rows, action, actionArg }: Pro
   const [busy, setBusy] = useState(false);
 
   function toCsv(data: (string | number)[][]) {
-    const esc = (v: string | number) => {
-      const s = String(v ?? "");
-      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-    };
-    const csv = [headers, ...data].map((r) => r.map(esc).join(",")).join("\n");
+    const csv = [headers, ...data].map((r) => r.map(escapeCsvCell).join(",")).join("\n");
     const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
